@@ -49,7 +49,7 @@ instacart %>%
   pull(number_of_aisles)# 134 aisles
 
 instacart %>%
-  group_by(aisle)%>%
+  group_by(aisle) %>%
   summarise(items_number = n()) %>%
   filter(items_number == max(items_number)) %>%
   pull(aisle)
@@ -121,11 +121,11 @@ packaged_vegetables_fruits<-
   knitr::kable()
 ```
 
-In the `baking ingredients` aisle, 	`Light Brown Sugar`, `Pure Baking Soda`, `Cane Sugar` have the most order times(499, 387, 336 respectively).
+In the `baking ingredients` aisle, 	`Light Brown Sugar`, `Pure Baking Soda`, `Cane Sugar` are the most three popular items (with 499, 387, 336 ordered times respectively).
 
-In the `dog food care` aisle, `Snack Sticks Chicken & Rice Recipe Dog Treats`,`Organix Chicken & Brown Rice Recipe`,`Small Dog Biscuits` have the most order times(30, 28, 26 respectively).
+In the `dog food care` aisle, `Snack Sticks Chicken & Rice Recipe Dog Treats`,`Organix Chicken & Brown Rice Recipe`,`Small Dog Biscuits` are the most three popular items (with 30, 28, 26 ordered times respectively).
 
-In the `packaged vegetables fruits` aisle, `Organic Baby Spinach`, `Organic Raspberries`, `Organic Blueberries` have the most order times(9784, 5546, 4966 respectively).
+In the `packaged vegetables fruits` aisle, `Organic Baby Spinach`, `Organic Raspberries`, `Organic Blueberries` are the most three popular items (with 9784, 5546, 4966 ordered times respectively).
 
 
 ### 4. Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week; format this table for human readers (i.e. produce a 2 x 7 table)
@@ -138,7 +138,7 @@ instacart %>%
   filter( product_name == "Pink Lady Apples" | 
           product_name == "Coffee Ice Cream") %>%
   select(order_dow, order_hour_of_day, product_name) %>%
-  mutate(order_dow =recode(order_dow, 
+  mutate(order_dow = recode(order_dow, 
          "0" = "Sunday", 
          "1" = "Monday",
          "2" = "Tuesday",
@@ -173,7 +173,7 @@ BRFSS <- brfss_smart2010 %>%
   filter(topic == "Overall Health") %>% #focus on the “Overall Health” 
   filter(response == "Excellent" |
          response ==  "Good" |
-         response == "Very good"|
+         response == "Very good" |
          response == "Fair" |
          response == "Poor"
          ) %>% #include only responses from “Excellent” to “Poor”
@@ -185,7 +185,7 @@ BRFSS <- brfss_smart2010 %>%
 ### 1. In 2002, which states were observed at 7 or more locations? What about in 2010?
 
 ```{r,echo=FALSE}
-states2002<-
+states2002 <-
   BRFSS %>%
   filter(year == 2002) %>%
   group_by(locationabbr) %>%
@@ -204,7 +204,7 @@ states2010 <-
   summarize(obs_loc = n()) %>%
   filter(obs_loc >= 7) 
 
-states2010%>%
+states2010 %>%
   knitr::kable()
   
 ```
@@ -314,12 +314,12 @@ plot_2006_density <-
              fill = response)) + 
   geom_density_ridges2 (scale = .9,
                        alpha = .7) +
-  theme_bw()+
+  theme_bw() +
   labs(
     title = str_to_title("Distribution of `data_value` for Responses"),
     subtitle = "NY, 2006",
     x = "Data value",
-    y ="Density"
+    y = "Density"
   ) +
   theme(legend.position = "bottom"  ) +
   viridis::scale_fill_viridis(discrete = TRUE) +
@@ -336,14 +336,14 @@ plot_2010_density <-
   ggplot(aes(x =data_value,
              y = response,
              fill = response)) + 
-  geom_density_ridges2 (scale = 0.9,
-                       alpha =.7) +
-  theme_bw()+
+  geom_density_ridges2(scale = 0.9,
+                       alpha = .7) +
+  theme_bw() +
   labs(
     title = str_to_title("Distribution of `data_value` for Responses"),
     subtitle = "NY, 2010",
     x = "Data value",
-    y ="Density"
+    y = "Density"
   ) +
   theme(legend.position = "none"  ) +
   viridis::scale_fill_viridis(discrete = TRUE) +
@@ -366,8 +366,11 @@ day_ind <-
 accel_data <- 
   read_csv("./dataset/accel_data.csv") %>%
   janitor::clean_names() %>%
-  mutate(weekday_vs_weekend = ifelse(day == "Saturday" | day == "Sunday", "weekend", "weekday"), #include a weekday vs weekend variable
-         day = factor(day, levels = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"))
+  mutate(weekday_vs_weekend = ifelse(day == "Saturday" | day == "Sunday", 
+                                     "weekend", "weekday"), #include a weekday vs weekend variable
+         day = factor(day, 
+                      levels = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+                      )
          )  %>%  # change the data type of `day` so that we can rearrange the `day_id`
   arrange(day) %>%
   mutate(
@@ -402,6 +405,8 @@ act_trend <-
   summarise(total_activity = sum(min_activity)) #aggregate accross minutes to create a total activity variable for each day
 
 act_trend %>%
+  pivot_wider(names_from = day,
+              values_from = total_activity) %>%
   knitr::kable() # show table
 
 act_trend %>%
@@ -420,7 +425,7 @@ act_trend %>%
   )
 ```
 
-Since there are 35 days (the table has too many rows), the table is hard to directly show the trends. Therefore, I add a plot here. From the plot which is derived from the table, it is easy to find that the activity of the man on Sundays is keeping decreasing. Also, There is a peak of the Monday's activity during the third week and a peak of weekly activity in the third week. Obviously, the activity on Saturdays of the fourth and the fith week is too low to see on the plot. I have checked the data of these two days in the table, and find that the values are actually very low. There should be some reasons to explain this situation.
+Since there are 35 days (with many values), the table is hard to directly show the trends. Therefore, I add a plot here. From the plot which is derived from the table, it is easy to find that the activity of the man on Sundays is keeping decreasing. Also, There is a peak of the Monday's activity during the third week and a peak of weekly activity in the third week. Obviously, the activity on Saturdays of the fourth and the fith week is too low to see on the plot. I have checked the data of these two days in the table, and find that the values are actually very low. There should be some reasons to explain this situation. Perhaps it's because the device failed to record data at that time and only returned the activity value as "1".
 
 ## Q3. Accelerometer data allows the inspection activity over the course of the day. Make a single-panel plot that shows the 24-hour activity time courses for each day and use color to indicate day of the week. Describe in words any patterns or conclusions you can make based on this graph.
 
