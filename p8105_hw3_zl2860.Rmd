@@ -25,10 +25,10 @@ knitr::opts_chunk$set(echo = TRUE,
 # Problem 1
 ## Load data
 Let's see a brief summary of this dataset first:
-```{r, echo=FALSE}
+```{r}
 #load data for problem 1 
-data("instacart")
-skimr::skim(instacart)
+data("instacart") #load data
+skimr::skim(instacart) # a brief summary
 ```
 
 The `instacart` dataset has ``r nrow(instacart)`` observations of ``r ncol(instacart)`` variables. The brief summary of the data shows that the data type within this dataset inclues both the character and the integer. However, some of the variables are not in the correct type for future analysis(e.g. `*_id`), requiring adjustment based on our need. Key variables in this dataset include `aisle`,`deaprment`,`product_name`,`order_dow`, `order_hour_of_day` and others.
@@ -61,7 +61,7 @@ There are 134 aisles and the most items are ordered from the `fresh vegetables` 
 
 ### 2. Make a plot that shows the number of items ordered in each aisle, limiting this to aisles with more than 10000 items ordered. Arrange aisles sensibly, and organize your plot so others can read it.
 
-```{r,echo=FALSE}
+```{r}
 instacart %>%
   group_by(aisle) %>%
   summarise(items_number = n()) %>%
@@ -89,7 +89,7 @@ In total, there are 39 aisles with more than 10000 items ordered. Among all of t
 
 #### Table 1. Three Most Popular Items in Each of the Three Aisles 
 #### (“baking ingredients”, “dog food care”, and “packaged vegetables fruits”)
-```{r,echo=FALSE}
+```{r}
 three_aisles <- 
   instacart %>%
   filter(aisle == "baking ingredients" |
@@ -131,7 +131,7 @@ In the `packaged vegetables fruits` aisle, `Organic Baby Spinach`, `Organic Rasp
 ### 4. Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week; format this table for human readers (i.e. produce a 2 x 7 table)
 
 #### Table 2. The Mean Hour of the Day at Which Pink Lady Apples and Coffee Ice Cream Are Ordered
-```{r,echo=FALSE}
+```{r}
 days <- c("Sunday", "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
 
 instacart %>%
@@ -160,15 +160,14 @@ The values in the table indicate the mean hour of the day on which the order was
 
 # Problem 2
 
-```{r,include=FALSE}
-#load data
-library(p8105.datasets)
-```
-
 ## Data Cleaning
 ```{r}
+
+data("brfss_smart2010")#load data
+
 #data cleaning
-BRFSS <- brfss_smart2010 %>%
+BRFSS <- 
+  brfss_smart2010 %>% #brfss_smart2010 exists in the package "p8105.datasets"
   janitor::clean_names() %>%
   filter(topic == "Overall Health") %>% #focus on the “Overall Health” 
   filter(response == "Excellent" |
@@ -184,13 +183,13 @@ BRFSS <- brfss_smart2010 %>%
 
 ### 1. In 2002, which states were observed at 7 or more locations? What about in 2010?
 
-```{r,echo=FALSE}
+```{r}
 states2002 <-
   BRFSS %>%
-  filter(year == 2002) %>%
+  filter(year == 2002) %>% #filter year
   group_by(locationabbr) %>%
-  distinct(locationdesc) %>%
-  summarize(obs_loc = n()) %>%
+  distinct(locationdesc) %>% #multiple observations at the same location are treated as 1 observation
+  summarize(obs_loc = n()) %>% #count
   filter(obs_loc >= 7) 
 
 states2002 %>%
@@ -200,8 +199,8 @@ states2010 <-
   BRFSS %>%
   filter(year == 2010) %>%
   group_by(locationabbr) %>%
-  distinct(locationdesc) %>%
-  summarize(obs_loc = n()) %>%
+  distinct(locationdesc) %>% # multiple observations at the same location are treated as 1 observation
+  summarize(obs_loc = n()) %>% #count
   filter(obs_loc >= 7) 
 
 states2010 %>%
@@ -218,7 +217,7 @@ In 2010,  ``r pull(states2010,locationabbr)`` were observed at 7 or more locatio
 
 ### 2. Construct a dataset that is limited to Excellent responses, and contains, year, state, and a variable that averages the data_value across locations within a state. Make a “spaghetti” plot of this average value over time within a state.
 
-```{r,echo=FALSE}
+```{r}
 BRFSS %>%
   filter(response == "Excellent") %>% #limited to Excellent responses
   group_by(locationabbr, year) %>%  #contains year, state
@@ -245,7 +244,7 @@ From the plot above we see that for most of the states, the average `data_value`
 
 ### 3. Make a two-panel plot showing, for the years 2006, and 2010, distribution of data_value for responses (“Poor” to “Excellent”) among locations in NY State.
 
-```{r,echo=FALSE,warning = FALSE}
+```{r,message = FALSE}
 # distribution with counties
 #plot for 2006
 plot_2006 <-
@@ -302,7 +301,7 @@ plot_2006 + plot_2010
 
 From the plot above, we see that `Good` and `Very good` responses always have highest data values compared to other responses. In addition, it's easy to identify the `Poor` and `Fair` responses as they have relatively low data values within different ranges. Data values of the `Excellent` responses are almost on the middle level among locations in NY State in both 2 years. I also made another plot here to show the density of the `data_value`. In this plot, the names of the counties are not specified. However, it makes up some of the information that is not reflected by the first plot.
 
-```{r, echo = FALSE,warning = FALSE}
+```{r, message = FALSE}
 # distribution without counties
 plot_2006_density <- 
   BRFSS %>%
@@ -391,7 +390,7 @@ The dataset `accel_data` has `r nrow(accel_data)` observations of `r ncol(accel_
 ## Q2. Traditional analyses of accelerometer data focus on the total activity over the day. Using your tidied dataset, aggregate accross minutes to create a total activity variable for each day, and create a table showing these totals. Are any trends apparent?
 
 ### Table 3. Total Activity Variable for Each Day
-```{r,echo=FALSE}
+```{r}
 # calculate total activity of a day
 act_trend <-
   accel_data %>%
@@ -429,7 +428,7 @@ Since there are 35 days (with many values), the table is hard to directly show t
 
 ## Q3. Accelerometer data allows the inspection activity over the course of the day. Make a single-panel plot that shows the 24-hour activity time courses for each day and use color to indicate day of the week. Describe in words any patterns or conclusions you can make based on this graph.
 
-```{r,echo=FALSE,warning = FALSE}
+```{r,message = FALSE}
 # final_plot_1
 accel_data %>%
   mutate(day_id = factor(day_id)) %>%
@@ -459,7 +458,7 @@ accel_data %>%
   
 ```
 
-```{r,echo=FALSE,message = FALSE}
+```{r, message = FALSE}
 # time series heatmap
 accel_data %>%
   mutate(day_id = factor(day_id)) %>%
@@ -471,23 +470,23 @@ accel_data %>%
   ) %>%
   group_by(day_id) %>%
   mutate(min = as.numeric(min),
-         hour = ceiling(min / 60)
+         hour = ceiling(min / 60) #convert minutes to hours
          ) %>%
   group_by(day_id, hour, week, day) %>%
-  summarise(hour_act = sum(min_activity)) %>%
+  summarise(hour_act = sum(min_activity)) %>% # calculate hour_activity
   mutate(day_of_week = day) %>% ## reaarange
   ggplot(aes(x = as.factor(hour),
              y = day_id)
          ) +
   geom_tile(aes(fill = hour_act,
                 width = 0.9,
-                height =0.9,
+                height = 0.9,
                 ), 
             size = 2.5) +
   viridis::scale_fill_viridis() +
   scale_fill_gradientn(colors = c("white","orange","red")) +  
   scale_x_discrete(breaks = c(1:24),
-                   labels = as.character(c(1:24))
+                   labels = as.character(c(1:24)) #24 hours, 24 breaks
                    ) +
   labs(title = "Time-Series Heatmap of the Continuous 35-Day-24-Hour Activity",
        x = "Hours",
