@@ -51,11 +51,12 @@ instacart %>%
 instacart %>%
   group_by(aisle) %>%
   summarise(items_number = n()) %>%
-  filter(items_number == max(items_number)) %>%
-  pull(aisle)
+  arrange(desc(items_number)) %>%
+  head(5) %>%
+  knitr::kable()
 ```
 
-There are 134 aisles and the most items are ordered from the `fresh vegetables` aisle.
+There are 134 aisles and the top 5 aisles from which the most items are ordered are `fresh vegetables`, `fresh fruits`, `packaged vegetables fruits`, `yogurt`, `packaged cheese`.
 
 
 
@@ -473,7 +474,7 @@ accel_data %>%
          hour = ceiling(min / 60) #convert minutes to hours
          ) %>%
   group_by(day_id, hour, week, day) %>%
-  summarise(hour_act = sum(min_activity)) %>% # calculate hour_activity
+  summarise(hour_act = sum(min_activity)) %>% # calculate the hour_activity
   mutate(day_of_week = day) %>% ## reaarange
   ggplot(aes(x = as.factor(hour),
              y = day_id)
