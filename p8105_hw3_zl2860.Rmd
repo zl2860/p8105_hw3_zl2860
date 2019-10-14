@@ -475,7 +475,7 @@ accel_data %>%
          ) %>%
   group_by(day_id, hour, week, day) %>%
   summarise(hour_act = sum(min_activity)) %>% # calculate the hour_activity
-  mutate(day_of_week = day) %>% ## reaarange
+  mutate(day_of_week = day) %>%
   ggplot(aes(x = as.factor(hour),
              y = day_id)
          ) +
